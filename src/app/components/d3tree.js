@@ -81,7 +81,7 @@ export default class D3Tree extends Component {
     const link = g
       .append('g')
       .attr('fill', 'none')
-      .attr('stroke', '#555')
+      .attr('stroke', '#D4CDF4')
       .attr('stroke-opacity', 0.4)
       .attr('stroke-width', 1.5)
       .selectAll('path')
@@ -108,7 +108,12 @@ export default class D3Tree extends Component {
       .append('circle')
       .attr('stroke', (d) => (d.children ? '#555' : '#999'))
       .attr('stroke-width', (d) => 1)
-      .attr('fill', () => '#fff')
+      .attr('fill', function (d) {
+        if (d.data.nodeSvgShape) {
+          return d.data.nodeSvgShape.shapeProps.fill
+        }
+        return 'gray'
+      })
       .attr('r', 5)
 
       // tooltip MouseOver
@@ -129,8 +134,7 @@ export default class D3Tree extends Component {
                          <br><strong>Props</strong>: ${d.data.stats.props}<br>
                          <br><strong>Tag</strong>: ${d.data.tag}<br>
                          <br><strong>EffectTag</strong>: ${d.data.stats.effectTag}<br>
-                         <br><strong>Render Start</strong>: ${d.data.stats.renderStart} seconds<br>
-                         <br><strong>Render Time</strong>: ${d.data.stats.renderTotal} seconds</p>
+                         <br><strong>Render Time</strong>: ${d.data.stats.renderTotal}ms</p>
                          `, this)
           .style('left', (d3.event.pageX) + 'px')
           .style('top', (d3.event.pageY) + 'px');
@@ -145,7 +149,7 @@ export default class D3Tree extends Component {
         tooltipDiv.transition()
           .duration(400)
           .style('opacity', 0);
-      });
+      })
 
     node
       .append('text')
@@ -164,6 +168,11 @@ export default class D3Tree extends Component {
   }
 
   render() {
-    return <div ref={this.treeRef}></div>
+    return (
+      <div className="container" id="tree-container">
+        <h3 className="graph-title">Render Times Tree Graph</h3>
+        <div className="graphDiv" ref={this.treeRef}></div>
+      </div>
+    )
   }
 }
